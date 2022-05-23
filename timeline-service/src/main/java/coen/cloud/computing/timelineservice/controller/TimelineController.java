@@ -24,7 +24,6 @@ public class TimelineController {
 	
 	@GetMapping("/get/{id}")
     public ResponseEntity<List<NewsArticle>> findTimeline(@PathVariable int id) {
-		System.out.println("Controller:"+id);
         List<NewsArticle> newsArticles = _timelineManager.getTimelineForUser(id);
         return new ResponseEntity<List<NewsArticle>>(newsArticles, HttpStatus.OK);
     }

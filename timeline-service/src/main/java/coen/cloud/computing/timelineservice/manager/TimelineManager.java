@@ -15,7 +15,6 @@ public class TimelineManager {
 	private TimelineRepo _timelineRepo;
 	
 	 public List<NewsArticle> getTimelineForUser(int userId){
-		System.out.println("Manager:"+userId);
 		return _timelineRepo.getAllArticlesByUser(userId);
 		 
 	 }

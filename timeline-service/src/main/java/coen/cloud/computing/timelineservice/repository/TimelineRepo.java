@@ -37,9 +37,9 @@ public class TimelineRepo {
 					+ "from articles a join topic_article_mapping tam on a.id=tam.article_id \n"
 					+ "join topics t on tam.topic_id = t.id\n"
 					+ "join user_topic_mapping utm on t.id = utm.topic_id\n"
-					+ "where utm.user_id =" + userId + "order by a.publish_date\n" 
+					+ "where utm.user_id =" + userId + " order by a.publish_date desc\n" 
 					+ "fetch next 100 rows only";
-			System.out.println("Query: "+query);
+			System.out.println("Get All Articles Call");
 			Connection connection = getConnection();
 			ResultSet rs = this.executeSelectQuery(connection, query);
 			while (rs.next()) {

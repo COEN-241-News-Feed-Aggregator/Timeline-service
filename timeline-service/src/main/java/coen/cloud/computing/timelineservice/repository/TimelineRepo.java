@@ -33,13 +33,15 @@ public class TimelineRepo {
 		Map <Integer, NewsArticle> newsArticles = new HashMap<Integer, NewsArticle>();
 		
 		try {
-			String query = "select  a.id, a.title, a.author, a.publish_date, a.description, a.web_url, t.name\n"
+			String query = "select  a.id, a.title, a.author, a.publish_date, a.description, a.web_url, a.image_url, t.name\n"
 					+ "from articles a join topic_article_mapping tam on a.id=tam.article_id \n"
 					+ "join topics t on tam.topic_id = t.id\n"
-					+ "join user_topic_mapping utm on t.id = utm.id\n"
-					+ "where utm.user_id =" + userId;
+					+ "join user_topic_mapping utm on t.id = utm.topic_id\n"
+					+ "where utm.user_id =" + userId + "order by a.publish_date\n" 
+					+ "fetch next 100 rows only";
 			System.out.println("Query: "+query);
-			ResultSet rs = this.executeSelectQuery(getConnection(), query);
+			Connection connection = getConnection();
+			ResultSet rs = this.executeSelectQuery(connection, query);
 			while (rs.next()) {
 				List<String> topics = new ArrayList<String>();
 				if(!newsArticles.isEmpty()) {
@@ -51,7 +53,7 @@ public class TimelineRepo {
 					else {
 						topics.add(rs.getString("name"));
 						NewsArticle newsArticle = new NewsArticle(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("publish_date"), rs.getString("description"), 
-								rs.getString("web_url"), "", topics);
+								rs.getString("web_url"), rs.getString("image_url"), topics);
 						
 						newsArticles.put(rs.getInt("id"), newsArticle);
 					}
@@ -60,13 +62,14 @@ public class TimelineRepo {
 				else {
 					topics.add(rs.getString("name"));
 					NewsArticle newsArticle = new NewsArticle(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("publish_date"), rs.getString("description"), 
-							rs.getString("web_url"), "", topics);
+							rs.getString("web_url"), rs.getString("image_url"), topics);
 					
 					newsArticles.put(rs.getInt("id"), newsArticle);
 				}
 				
 								
 			}
+			connection.close();
 			return new ArrayList(newsArticles.values());
 		}
 		catch (SQLException e) {
